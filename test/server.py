@@ -1,6 +1,6 @@
 from socket import *
 
-serverPort = 80
+serverPort = 12000
 
 serverSocket = socket(AF_INET,SOCK_STREAM)
 
