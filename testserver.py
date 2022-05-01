@@ -1,14 +1,14 @@
 from socket import *
 from datetime import datetime
 import sys
-from urllib import request
 
-serverPort = 8080
+serverPort = 80
 # Make TCP server socket
 serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind(('', serverPort))
+serverSocket.bind(('192.168.3.120', serverPort))
 
-serverSocket.listen(0)
+serverSocket.listen()
+print('The server is running...')
 
 while True:
     client_socket, addr = serverSocket.accept()
@@ -19,7 +19,7 @@ while True:
     request_method = request_data[0]
     request_version = request_data[2]
 
-    server_name = "hi"
+    server_name = "Test Server"
 
     if request_method == "GET":
         response_data = "{0} 200 OK\nServer: {1}\nDate: {2}\n".format(request_version, server_name, 

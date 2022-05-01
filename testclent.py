@@ -3,7 +3,7 @@ from socket import *
 # Colab에서 실해시는 Sever는 이더넷 연결, Colab은 Client로 연결
 #serverName = '219.254.56.176'
 serverName = '127.0.0.1'
-serverPort = 8080
+serverPort = 80
 
 def create_socket_and_send_message(request_message):
   # 클라이언트 소켓 만들기

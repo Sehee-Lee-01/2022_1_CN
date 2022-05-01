@@ -1,7 +1,6 @@
 from socket import *
 from datetime import datetime
 import sys
-from urllib import request
 
 serverPort = 80
 # Make TCP server socket
@@ -9,6 +8,7 @@ serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('127.0.0.1', serverPort))
 
 # Start receive request
+serverSocket.listen()
 print('The server is running')
 
 while True:
