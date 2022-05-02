@@ -43,7 +43,7 @@ while True:
                 response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n\n".format(request_version, 
                 datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
                 # read file
-                with open ('{0}.txt'.format(fliename), 'r') as txt:
+                with open ('index.txt', 'r') as txt:
                         while True:
                             body = txt.readline()
                             if not body:
