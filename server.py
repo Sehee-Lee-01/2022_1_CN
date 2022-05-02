@@ -4,59 +4,90 @@ from socket import *
 from datetime import datetime
 from urllib import request, response
 
-# server_name = '127.0.0.1'
-serverPort = 80
-serverSocket = socket(AF_INET, SOCK_STREAM) ## TCP 소켓 연결
+# Make TCP server socket
+serverPort = 8080
+serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('', serverPort)) 
 
-serverSocket.listen(5)
+# Start receive request
+serverSocket.listen(1)
+print('The server is running...\n')
 
 while True:
-    
-    client_socket, addr = serverSocket.accept()  ## 클라이언트와 연결
-    data = client_socket.recv(65535)  ## 메시지 대기
+    # Make connection if request come.
+    client_socket, addr = serverSocket.accept()  
 
-    request_data = data.decode().split() ## 받은 요청을 해석
-    request_method = request_data[0] ## 요청메소드
-    request_item = request_data[1] ## 요청 아이템
-    request_version = request_data[2] ## HTTP 버전
-    request_body = request_data[-2:-1]
+    # receive
+    data = client_socket.recv(65535)
+
+    # Show HTTP Request message
     print(data.decode())
-     
-    server_name = addr[0]  ## 접속한 클라이언트 주소
+
+    request_data = data.decode().split() 
+    request_method = request_data[0] 
+    request_item = request_data[1] 
+    request_version = request_data[2] 
+    request_body = request_data[-2:]
+
+    server_name = addr[0]
     
-    if request_version == "HTTP/1.1": ## 정삭적인 HTTP 버전 요청
-        
-        if request_method == "GET": ## 정상적인 index.html 요청
-            if request_item != "/index.html": ### Get 요청 실패
+    if request_version == "HTTP/1.1":
+        # GET(Server send Data)
+        if request_method == "GET": 
+            # Invalid address
+            if request_item != "/index.html": 
                 response_data = "{0} 404 Error\nDate: {1}\nServer: {2}\n".format(request_version, 
                 datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
-            else:
+            
+            else: # Valid address(Send Data)
                 response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
                 datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
                 with open ('index.html', 'r') as txt:
                     body = txt.readline()
                 response_data +="\n"+ body
         
+        # POST(Client send Data for generate)
+        elif request_method == "POST" : 
+                # If client has the data to post
+                if request_body[0] =='Data:': 
+                    response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
+                    datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
+
+                else: # no data to modify
+                    response_data = "{0} 204 No content\nDate: {1}\nServer: {2}\n".format(request_version, 
+                    datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
             
-        elif request_method == "POST" : ## 정상적인 POST 요청
-            if request_body[0] =='Data:': ## 요청 성공 +  전송할 Data가 있는 경우
-                response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
-                datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
-                
-            else: ## 요청은 성공했지만 전송할 data가 없는경우
-                response_data = "{0} 204 No content\nDate: {1}\nServer: {2}\n".format(request_version, 
-                datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
+        # PUT(Client send Data for Update)
+        elif request_method == "PUT" : 
+            if request_item != "/index.html": 
+                # If client has the data to put
+                if request_body[0] =='Data:': 
+                    response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
+                    datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
+                    
+                else: # no data to modify
+                    response_data = "{0} 204 No content\nDate: {1}\nServer: {2}\n".format(request_version, 
+                    datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
+
+         # PATCH(Client send Data for Modify)
+        elif request_method == "PATCH" : 
+            if request_item != "/index.html": 
+            # If client has the data to patch
+                if request_body[0] =='Data:': 
+                    response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
+                    datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
             
+                else: # no data to modify
+                    response_data = "{0} 204 No content\nDate: {1}\nServer: {2}\n".format(request_version, 
+                    datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
             
-        elif request_method == "HEAD" : ## 정상적이 HEAD 요청
-            response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
-            datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
-            
-        else: ## 다른 메소드를 요청 오류
+        # Other method    
+        else: 
             response_data = "{0} 405 Method Not Allowed\nDate: {1}\nServer: {2}\n".format(request_version,
             datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
-    else: ## 다른 HTTP 버전 요청 오류
+    
+    # Other HTTP version
+    else: 
         response_data = "{0} 505  HTTP version not supported\nDate: {1}\nServer: {2}\n".format(request_version,
         datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
             
