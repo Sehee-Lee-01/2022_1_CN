@@ -35,21 +35,21 @@ create_socket_and_send_message(request_message)
 request_message = 'POST / HTTP/1.1\r\n'
 request_message += 'Host: ' + serverName + '\r\n'
 request_message += 'Connection: Keep-Alive\r\n'
-request_message += 'Data: Filename: new_file Content: New\n\n'
-create_socket_and_send_message(request_message)
-
-# PUT (update index.txt)
-request_message = 'POST / HTTP/1.1\r\n'
-request_message += 'Host: ' + serverName + '\r\n'
-request_message += 'Connection: Keep-Alive\r\n'
-request_message += 'Data: Information is updated.\n\n'
+request_message += 'Data: Filename: new_file Content: New_Content\n\n'
 create_socket_and_send_message(request_message)
 
 # PATCH (modify index.txt)
-request_message = 'PATCH / HTTP/1.1\r\n'
+request_message = 'PATCH /index.txt HTTP/1.1\r\n'
 request_message += 'Host: ' + serverName + '\r\n'
 request_message += 'Connection: Keep-Alive\r\n'
-request_message += 'Data: Old: world New: Sehee\n\n'
+request_message += 'Data: Hello_Sehee!\n\n'
+create_socket_and_send_message(request_message)
+
+# PUT (update index.txt)
+request_message = 'PUT /index.txt HTTP/1.1\r\n'
+request_message += 'Host: ' + serverName + '\r\n'
+request_message += 'Connection: Keep-Alive\r\n'
+request_message += 'Data: Information_is_updated.\n\n'
 create_socket_and_send_message(request_message)
 
 # Error (Other Method)
