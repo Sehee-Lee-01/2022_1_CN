@@ -8,54 +8,59 @@ def create_socket_and_send_message(request_message):
   clienntSocket.connect((serverName, serverPort))
   clienntSocket.send(request_message.encode('utf-8'))
 
-  # 응답확인
   receive_message = clienntSocket.recv(65535)
   print(receive_message.decode())
 
   clienntSocket.close()
-  
-   
-request_message = 'HEAD / HTTP/1.1\r\n'
-request_message += 'Host: ' + serverName + str(serverPort)+'\r\n'
-request_message += 'Connection: Keep-Alive\n\n'
-create_socket_and_send_message(request_message)
 
-####################↑↑↑↑↑HEAD↑↑↑↑↑↑↑↑##############  
-  
-
-
-request_message = 'GET /index.html HTTP/1.1\r\n'
+# GET (show index.txt)
+request_message = 'GET /index.txt HTTP/1.1\r\n'
 request_message += 'Host: ' + serverName + '\r\n'
 request_message += 'Connection: Keep-Alive\n\n'
 create_socket_and_send_message(request_message)
 
-request_message = 'GET /Hello.html HTTP/1.1\r\n'
+# GET Error(wrong address)
+request_message = 'GET /index.html HTTP/1.1\r\n'
 request_message += 'Host: ' + serverName + '\r\n'
 request_message += 'Connection: Keep-Alive\n\n'
 create_socket_and_send_message(request_message)  
 
-
-####################↑↑↑↑↑GET↑↑↑↑↑↑↑↑##############
-
-
+# POST (no data)
 request_message = 'POST / HTTP/1.1\r\n'
 request_message += 'Host: ' + serverName + '\r\n'
 request_message += 'Connection: Keep-Alive\r\n'
-## 전송데이터 없이 post 요청
 create_socket_and_send_message(request_message)
 
+# POST (make new file)
 request_message = 'POST / HTTP/1.1\r\n'
+request_message += 'Host: ' + serverName + '\r\n'
+request_message += 'Connection: Keep-Alive\r\n'
+request_message += 'Data: Filename: new_file Content: New\n\n'
+create_socket_and_send_message(request_message)
+
+# PUT (update index.txt)
+request_message = 'POST / HTTP/1.1\r\n'
+request_message += 'Host: ' + serverName + '\r\n'
+request_message += 'Connection: Keep-Alive\r\n'
+request_message += 'Data: Information is updated.\n\n'
+create_socket_and_send_message(request_message)
+
+# PATCH (modify index.txt)
+request_message = 'PATCH / HTTP/1.1\r\n'
+request_message += 'Host: ' + serverName + '\r\n'
+request_message += 'Connection: Keep-Alive\r\n'
+request_message += 'Data: Old: world New: Sehee\n\n'
+create_socket_and_send_message(request_message)
+
+# Error (Other Method)
+request_message = 'DELETE / HTTP/1.1\r\n'
 request_message += 'Host: ' + serverName + '\r\n'
 request_message += 'Connection: Keep-Alive\r\n'
 request_message += 'Data: data....\n\n'
 create_socket_and_send_message(request_message)
 
-####################↑↑↑↑↑POST↑↑↑↑↑↑↑↑##############
-
-
-request_message = 'HEAD / HTTP/2\r\n'
+# Error (Other HTTP version)
+request_message = 'PATCH / HTTP/2\r\n'
 request_message += 'Host: ' + serverName + '\r\n'
 request_message += 'Connection: Keep-Alive\n\n'
 create_socket_and_send_message(request_message)
-
-####################↑↑↑↑↑ERROR HTTP VERISON↑↑↑↑↑↑↑↑##############

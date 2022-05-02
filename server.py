@@ -27,59 +27,77 @@ while True:
     request_method = request_data[0] 
     request_item = request_data[1] 
     request_version = request_data[2] 
-    request_body = request_data[-2:]
+    # if request has body
+    if len(request_data) > 7:
+        request_body = request_data[8:]
+    else: 
+        request_body = []
 
     server_name = addr[0]
     
     if request_version == "HTTP/1.1":
         # GET(Server send Data)
         if request_method == "GET": 
-            # Invalid address
-            if request_item != "/index.html": 
-                response_data = "{0} 404 Error\nDate: {1}\nServer: {2}\n".format(request_version, 
-                datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
-            
-            else: # Valid address(Send Data)
+            # Valid address
+            if request_item == "/index.txt": 
                 response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
                 datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
-                with open ('index.html', 'r') as txt:
+                with open ('index.txt', 'r') as txt:
                     body = txt.readline()
                 response_data +="\n"+ body
+
+            else: # Invalid address(Send Data)
+                response_data = "{0} 404 Error\nDate: {1}\nServer: {2}\n".format(request_version, 
+                datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)                
         
         # POST(Client send Data for generate)
         elif request_method == "POST" : 
                 # If client has the data to post
-                if request_body[0] =='Data:': 
-                    response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
-                    datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
-
-                else: # no data to modify
-                    response_data = "{0} 204 No content\nDate: {1}\nServer: {2}\n".format(request_version, 
-                    datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
+            if len(request_body) > 0: 
+                response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
+                datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
+                fliename = request_body[1]
+                content = request[3]
+                with open ('{0}.txt'.format(fliename), 'w') as txt:
+                    txt.write(content + "\n")
+                    txt.close()
+                response_data +="\n"+ body
+            
+            else: # no data to modify
+                response_data = "{0} 204 No content\nDate: {1}\nServer: {2}\n".format(request_version, 
+                datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
             
         # PUT(Client send Data for Update)
         elif request_method == "PUT" : 
-            if request_item != "/index.html": 
+            if request_item != "/index.txt": 
                 # If client has the data to put
-                if request_body[0] =='Data:': 
+                if len(request_body) > 0: 
                     response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
                     datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
                     
                 else: # no data to modify
                     response_data = "{0} 204 No content\nDate: {1}\nServer: {2}\n".format(request_version, 
                     datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
+            
+            else: # Invalid address(Send Data)
+                response_data = "{0} 404 Error\nDate: {1}\nServer: {2}\n".format(request_version, 
+                datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)   
 
-         # PATCH(Client send Data for Modify)
+        # PATCH(Client send Data for Modify)
         elif request_method == "PATCH" : 
-            if request_item != "/index.html": 
+            if request_item != "/index.txt": 
             # If client has the data to patch
-                if request_body[0] =='Data:': 
+                if len(request_body) > 0: 
                     response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n".format(request_version, 
                     datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
             
                 else: # no data to modify
                     response_data = "{0} 204 No content\nDate: {1}\nServer: {2}\n".format(request_version, 
                     datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
+
+            else: # Invalid address(Send Data)
+                response_data = "{0} 404 Error\nDate: {1}\nServer: {2}\n".format(request_version, 
+                datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)   
             
         # Other method    
         else: 
