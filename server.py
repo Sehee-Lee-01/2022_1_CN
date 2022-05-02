@@ -43,9 +43,12 @@ while True:
                 response_data = "{0} 200 OK\nDate: {1}\nServer: {2}\n\n".format(request_version, 
                 datetime.now().strftime('%a, %d %b %Y %H:%M:%S KST'), server_name)
                 # read file
-                with open ('index.txt', 'r') as txt:
-                    body = txt.readline()
-                response_data +="\n"+ body
+                with open ('{0}.txt'.format(fliename), 'r') as txt:
+                        while True:
+                            body = txt.readline()
+                            if not body:
+                                break
+                            response_data += body
 
             else: # Invalid address(Send Data)
                 response_data = "{0} 404 Error\nDate: {1}\nServer: {2}\n\n".format(request_version, 
